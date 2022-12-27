@@ -1,4 +1,5 @@
 import axios from 'axios'
+import dompurify from 'dompurify'
 
 function searchResultsHTML(stores) {
   return stores.map(store => {
@@ -34,8 +35,11 @@ function typeAhead(search) {
       .get(`/api/search?q=${this.value}`)
       .then(res => {
         if (res.data.length) {
-          searchResults.innerHTML = searchResultsHTML(res.data)
+          searchResults.innerHTML = dompurify.sanitize(searchResultsHTML(res.data))
+          return
         }
+        //tell user no results
+        searchResults.innerHTML = dompurify.sanitize(`<div class="search__result">No results for ${this.value} found!</div>`)
       })
       .catch(err => {
         console.error(err)
@@ -48,7 +52,7 @@ function typeAhead(search) {
     if (![38, 40, 13].includes(e.keyCode)) {
       return
     }
-    const activeClass = 'search__results--active' //just so we don't have to write this a lot
+    const activeClass = 'search__result--active' //just so we don't have to write this a lot
     const current = search.querySelector(`.${activeClass}`) //this is the one the user is keying up or down to, or hovering over
     const items = search.querySelectorAll('.search__result') //all the search results
     let next
