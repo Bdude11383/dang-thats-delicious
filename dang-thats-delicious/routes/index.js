@@ -58,7 +58,7 @@ router.post('/reviews/:id',
   catchErrors(reviewController.addReview))
 
 //next thing
-//router.get('/top',catchErrors)
+router.get('/top', catchErrors(storeController.getTopStores))
 
 //API
 router.get('/api/search', catchErrors(storeController.searchStores))
